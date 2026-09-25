@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Главная — Центр Медицинской Диагностики{% endblock %}
+
+{% block content %}
+<!-- Приветственный баннер (Jumbotron) -->
+<div class="p-5 mb-4 bg-light rounded-3 border">
+    <div class="container-fluid py-5">
+        <h1 class="display-5 fw-bold text-primary">Современная медицинская диагностика</h1>
+        <p class="col-md-8 fs-4">Мы предлагаем высокоточные лабораторные и инструментальные исследования на оборудовании экспертного класса. Быстро, надежно и без очередей.</p>
+        <a class="btn btn-primary btn-lg" href="{% url 'services:catalog' %}">Каталог услуг и цен</a>
+    </div>
+</div>
+
+<!-- Блок Услуг -->
+<div class="row mb-5">
+    <h2 class="text-center mb-4">Наши популярные услуги</h2>
+    {% for service in services %}
+    <div class="col-md-4 mb-3">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body d-flex flex-column">
+                <span class="badge bg-secondary align-self-start mb-2">{{ service.category.name }}</span>
+                <h5 class="card-title fw-bold">{{ service.name }}</h5>
+                <p class="card-text text-muted flex-grow-1">{{ service.description|truncatewords:15 }}</p>
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <span class="fs-5 fw-bold text-success">{{ service.price }} ₽</span>
+                    <span class="text-muted"><i class="bi bi-clock me-1"></i>{{ service.duration_minutes }} мин</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <p class="text-center text-muted">Список услуг временно пуст. Вы можете добавить их в админ-панели.</p>
+    {% endfor %}
+</div>
+
+<!-- Форма обратной связи -->
+<div class="row justify-content-center">
+    <div class="col-md-6 border rounded p-4 bg-white shadow-sm">
+        <h3 class="text-center mb-3 text-primary"><i class="bi bi-envelope-paper me-2"></i>Обратная связь</h3>
+        <p class="text-center text-muted small">Остались вопросы? Оставьте заявку, и наш администратор перезвонит вам.</p>
+        <form method="post" novalidate>
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button type="submit" class="btn btn-primary w-100 mt-3">Отправить заявку</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
