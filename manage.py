@@ -4,6 +4,9 @@ import os
 import sys
 
 
+# ПРИНУДИТЕЛЬНЫЙ ФИКС КОДИРОВКИ ДЛЯ WINDOWS И POSTGRES
+os.environ.setdefault('PGCLIENTENCODING', 'UTF-8')
+
 def main():
     """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')

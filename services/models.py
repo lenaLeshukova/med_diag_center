@@ -4,7 +4,7 @@ class Doctor(models.Model):
     full_name = models.CharField(max_length=150, verbose_name="ФИО Врача")
     specialization = models.CharField(max_length=100, verbose_name="Специализация")
     experience = models.PositiveIntegerField(verbose_name="Стаж работы (лет)")
-    photo = models.ImageField(upload_url='doctors/', verbose_name="Фотография", blank=True, null=True)
+    photo = models.ImageField(upload_to='doctors/', verbose_name="Фотография", blank=True, null=True)
     bio = models.TextField(verbose_name="О враче / Биография", blank=True)
 
     class Meta:
