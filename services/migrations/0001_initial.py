@@ -8,50 +8,123 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Doctor',
+            name="Doctor",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('full_name', models.CharField(max_length=150, verbose_name='ФИО Врача')),
-                ('specialization', models.CharField(max_length=100, verbose_name='Специализация')),
-                ('experience', models.PositiveIntegerField(verbose_name='Стаж работы (лет)')),
-                ('photo', models.ImageField(blank=True, null=True, upload_to='doctors/', verbose_name='Фотография')),
-                ('bio', models.TextField(blank=True, verbose_name='О враче / Биография')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "full_name",
+                    models.CharField(max_length=150, verbose_name="ФИО Врача"),
+                ),
+                (
+                    "specialization",
+                    models.CharField(max_length=100, verbose_name="Специализация"),
+                ),
+                (
+                    "experience",
+                    models.PositiveIntegerField(verbose_name="Стаж работы (лет)"),
+                ),
+                (
+                    "photo",
+                    models.ImageField(
+                        blank=True,
+                        null=True,
+                        upload_to="doctors/",
+                        verbose_name="Фотография",
+                    ),
+                ),
+                (
+                    "bio",
+                    models.TextField(blank=True, verbose_name="О враче / Биография"),
+                ),
             ],
             options={
-                'verbose_name': 'Врач',
-                'verbose_name_plural': 'Врачи',
+                "verbose_name": "Врач",
+                "verbose_name_plural": "Врачи",
             },
         ),
         migrations.CreateModel(
-            name='ServiceCategory',
+            name="ServiceCategory",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100, verbose_name='Название категории')),
-                ('description', models.TextField(blank=True, verbose_name='Описание категории')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(max_length=100, verbose_name="Название категории"),
+                ),
+                (
+                    "description",
+                    models.TextField(blank=True, verbose_name="Описание категории"),
+                ),
             ],
             options={
-                'verbose_name': 'Категория услуг',
-                'verbose_name_plural': 'Категории услуг',
+                "verbose_name": "Категория услуг",
+                "verbose_name_plural": "Категории услуг",
             },
         ),
         migrations.CreateModel(
-            name='MedicalService',
+            name="MedicalService",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=150, verbose_name='Название услуги')),
-                ('description', models.TextField(verbose_name='Подробное описание услуги')),
-                ('price', models.DecimalField(decimal_places=2, max_digits=10, verbose_name='Цена (руб.)')),
-                ('duration_minutes', models.PositiveIntegerField(default=30, verbose_name='Длительность (мин)')),
-                ('category', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='services', to='services.servicecategory', verbose_name='Категория')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(max_length=150, verbose_name="Название услуги"),
+                ),
+                (
+                    "description",
+                    models.TextField(verbose_name="Подробное описание услуги"),
+                ),
+                (
+                    "price",
+                    models.DecimalField(
+                        decimal_places=2, max_digits=10, verbose_name="Цена (руб.)"
+                    ),
+                ),
+                (
+                    "duration_minutes",
+                    models.PositiveIntegerField(
+                        default=30, verbose_name="Длительность (мин)"
+                    ),
+                ),
+                (
+                    "category",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="services",
+                        to="services.servicecategory",
+                        verbose_name="Категория",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Медицинская услуга',
-                'verbose_name_plural': 'Медицинские услуги',
+                "verbose_name": "Медицинская услуга",
+                "verbose_name_plural": "Медицинские услуги",
             },
         ),
     ]
