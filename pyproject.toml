@@ -5,11 +5,23 @@ description = ""
 authors = [
     {name = "Lena Leshukova",email = "lena000183@gmail.com"}
 ]
-requires-python = ">=3.12"
+requires-python = ">=3.12,<3.13"
 dependencies = [
+    "psycopg2-binary (>=2.9.13,<3.0.0)",
+    "django-environ (>=0.14.0,<0.15.0)",
+    "django-crispy-forms (>=2.7,<3.0)",
+    "crispy-bootstrap5 (>=2026.9,<2027.0)",
+    "pillow (>=12.3.0,<13.0.0)"
 ]
 
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[dependency-groups]
+dev = [
+    "pytest (>=9.1.1,<10.0.0)",
+    "pytest-django (>=4.14.0,<5.0.0)",
+    "pytest-cov (>=7.1.0,<8.0.0)"
+]
