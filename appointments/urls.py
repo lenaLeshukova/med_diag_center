@@ -1,11 +1,12 @@
-from django.shortcuts import render
 from django.urls import path
+from . import views
 
 app_name = 'appointments'
 
 urlpatterns = [
-    path('login/', lambda r: render(r, 'base.html'), name='login'),
-    path('register/', lambda r: render(r, 'base.html'), name='register'),
-    path('logout/', lambda r: render(r, 'base.html'), name='logout'),
-    path('dashboard/', lambda r: render(r, 'base.html'), name='dashboard'),
+    path('register/', views.register_view, name='register'),
+    path('login/', views.login_view, name='login'),
+    path('logout/', views.logout_view, name='logout'),
+    path('dashboard/', views.dashboard_view, name='dashboard'),
+    path('new-appointment/', views.create_appointment_view, name='new_appointment'),
 ]
