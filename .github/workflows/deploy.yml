@@ -70,7 +70,7 @@ jobs:
               sudo git reset --hard origin/feature/env-and-models
               sudo git pull origin feature/env-and-models
             else
-              sudo git clone https://github.com "$PROJECT_DIR"
+              sudo git clone https://github.com/lenaLeshukova/med_diag_center.git
               cd "$PROJECT_DIR"
               sudo git checkout feature/env-and-models
             fi
