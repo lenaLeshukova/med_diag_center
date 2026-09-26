@@ -5,6 +5,8 @@ on:
     branches:
       - main
       - master
+      - develop
+      - feature/env-and-models
 
 jobs:
   tests:
@@ -47,23 +49,34 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           passphrase: ${{ secrets.SSH_PASSPHRASE }} # Если ключ без пароля, GitHub просто проигнорирует это поле
           script: |
-            # Проверяем и устанавливаем docker / docker-compose
+            # 1. Проверяем и устанавливаем docker / docker-compose, если их нет
             if ! command -v docker &> /dev/null; then
               sudo apt update && sudo apt install -y docker.io docker-compose
             fi
             
+            # 2. Жёстко останавливаем ВСЕ запущенные ранее докер-контейнеры (от прошлого проекта)
+            echo "Очистка старых контейнеров..."
+            sudo docker stop $(sudo docker ps -aq) 2>/dev/null || true
+            sudo docker rm $(sudo docker ps -aq) 2>/dev/null || true
+            
+            # 3. Полностью удаляем старые неиспользуемые докер-образы и сети, чтобы освободить место
+            sudo docker system prune -af --volumes
+            
+            # 4. Переходим в папку с проектом или клонируем его с нуля
             PROJECT_DIR="med_diag_center"
             if [ -d "$PROJECT_DIR" ]; then
               cd "$PROJECT_DIR"
+              sudo git fetch --all
+              sudo git reset --hard origin/main || sudo git reset --hard origin/master
               sudo git pull origin main || sudo git pull origin master
             else
               sudo git clone https://github.com{{ github.repository }}.git "$PROJECT_DIR"
               cd "$PROJECT_DIR"
             fi
             
-            # Записываем секретный файл .env на сервер перед сборкой контейнеров
+            # 5. Записываем свежий секретный файл .env на сервер из секретов GitHub
             echo "${{ secrets.ENV_FILE }}" > .env
             
-            # Перезапускаем контейнеры
-            sudo docker-compose down
+            # 6. Запускаем сборку нового проекта с нуля в фоновом режиме
+            echo "Запуск нового медицинского центра в Docker..."
             sudo docker-compose up --build -d
