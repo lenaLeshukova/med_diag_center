@@ -18,7 +18,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-size: '3.12'
+          python-version: '3.12'
 
       - name: Install Poetry and dependencies
         run: |
@@ -31,12 +31,6 @@ jobs:
           python -m poetry run flake8 . --exclude=.venv,migrations,config/settings.py --max-line-length=120
 
       - name: Run Unit Tests
-        env:
-          # Передаем фейковые безопасные данные строго для запуска тестов в GitHub
-          SECRET_KEY: "django-insecure-github-actions-test-key-2026"
-          DEBUG: "True"
-          ALLOWED_HOSTS: "localhost,127.0.0.1"
-          DB_HOST: "127.0.0.1" # Тесты Django автоматически используют локальную SQLite
         run: |
           python -m poetry run python manage.py test
 
@@ -53,7 +47,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          passphrase: ${{ secrets.SSH_PASSPHRASE }} # Если ключ без пароля, GitHub просто проигнорирует это поле
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
           script: |
             # 1. Проверяем и устанавливаем docker / docker-compose, если их нет
             if ! command -v docker &> /dev/null; then
@@ -73,11 +67,12 @@ jobs:
             if [ -d "$PROJECT_DIR" ]; then
               cd "$PROJECT_DIR"
               sudo git fetch --all
-              sudo git reset --hard origin/main || sudo git reset --hard origin/master
-              sudo git pull origin main || sudo git pull origin master
+              sudo git reset --hard origin/feature/env-and-models
+              sudo git pull origin feature/env-and-models
             else
-              sudo git clone https://github.com{{ github.repository }}.git "$PROJECT_DIR"
+              sudo git clone https://github.com "$PROJECT_DIR"
               cd "$PROJECT_DIR"
+              sudo git checkout feature/env-and-models
             fi
             
             # 5. Записываем свежий секретный файл .env на сервер из секретов GitHub
