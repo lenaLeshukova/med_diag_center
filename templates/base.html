@@ -1,0 +1,81 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}MedDiagCenter — Медицинская диагностика{% endblock %}</title>
+    <!-- Подключаем локальный Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <!-- Можно добавить иконки Bootstrap через CDN для красоты -->
+    <link rel="stylesheet" href="https://jsdelivr.net">
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+    <!-- Шапка сайта (Navbar) -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="{% url 'core:index' %}">
+                <i class="bi bi-heart-pulse-fill me-2"></i>MedDiagCenter
+            </a>
+            <button class="navbar-dark navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'core:index' %}">Главная</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'core:about' %}">О компании</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'services:catalog' %}">Услуги и цены</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'core:contacts' %}">Контакты</a></li>
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="btn btn-outline-light me-2" href="{% url 'appointments:dashboard' %}">
+                                <i class="bi bi-person-circle me-1"></i> Личный кабинет
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <form action="{% url 'appointments:logout' %}" method="post" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-light text-primary">Выйти</button>
+                            </form>
+                        </li>
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'appointments:login' %}">Войти</a></li>
+                        <li class="nav-item"><a class="btn btn-light text-primary ms-2" href="{% url 'appointments:register' %}">Регистрация</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Основной изменяемый контент страницы -->
+    <main class="flex-grow-1 my-4">
+        <div class="container">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            {% block content %}
+            <!-- Тут будет разметка дочерних страниц -->
+            {% endblock %}
+        </div>
+    </main>
+
+    <!-- Подвал сайта (Footer) -->
+    <footer class="bg-dark text-white text-center py-3 mt-auto">
+        <div class="container">
+            <p class="mb-0">&copy; 2026 MedDiagCenter. Все права защищены. Экзаменационный проект.</p>
+        </div>
+    </footer>
+
+    <!-- Подключаем локальный Bootstrap JS -->
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>

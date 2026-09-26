@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% block title %}Личный кабинет — MedDiagCenter{% endblock %}
+
+{% block content %}
+<div class="row mb-4 align-items-center">
+    <div class="col-md-8">
+        <h1 class="text-primary fw-bold mb-1">Личный кабинет пациента</h1>
+        <p class="text-muted">Здравствуйте, <strong>{{ user.first_name }} {{ user.last_name }}</strong>! Здесь вы можете управлять вашими записями и смотреть результаты.</p>
+    </div>
+    <div class="col-md-4 text-md-end">
+        <a href="{% url 'appointments:new_appointment' %}" class="btn btn-primary btn-lg shadow-sm">
+            <i class="bi bi-calendar-plus me-2"></i>Записаться на диагностику
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-dark text-white py-3">
+                <h4 class="mb-0 fw-bold"><i class="bi bi-clock-history me-2"></i>История ваших посещений и записей</h4>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped mb-0 align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th># Записи</th>
+                                <th>Услуга / Исследование</th>
+                                <th>Специалист</th>
+                                <th>Дата и время</th>
+                                <th>Статус</th>
+                                <th>Результаты исследования</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for app in appointments %}
+                            <tr>
+                                <td class="fw-bold text-muted">#{{ app.id }}</td>
+                                <td class="fw-semibold">{{ app.service.name }}</td>
+                                <td>{{ app.doctor.full_name }}</td>
+                                <td>{{ app.date_time|date:"d.m.Y H:i" }}</td>
+                                <td>
+                                    {% if app.status == 'created' %}
+                                        <span class="badge bg-info text-dark">Создана</span>
+                                    {% elif app.status == 'confirmed' %}
+                                        <span class="badge bg-primary">Подтверждена</span>
+                                    {% elif app.status == 'completed' %}
+                                        <span class="badge bg-success">Выполнена</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Отменена</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if app.result %}
+                                        <div class="d-grid gap-1">
+                                            <span class="text-truncate small d-block" title="{{ app.result.conclusion }}">
+                                                <strong>Заключение:</strong> {{ app.result.conclusion|truncatechars:30 }}
+                                            </span>
+                                            {% if app.result.pdf_report %}
+                                                <a href="{{ app.result.pdf_report.url }}" target="_blank" class="btn btn-sm btn-outline-danger align-self-start pt-0 pb-0">
+                                                    <i class="bi bi-file-earmark-pdf me-1"></i>Скачать PDF
+                                                </a>
+                                            {% endif %}
+                                        </div>
+                                    {% else %}
+                                        <span class="text-muted small"><i class="bi bi-hourglass-split me-1"></i>Ожидает приема</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center py-5 text-muted">
+                                    <i class="bi bi-calendar-x display-4 d-block mb-3"></i>
+                                    Вы еще ни разу не записывались на прием через наш сайт.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
