@@ -31,9 +31,6 @@ jobs:
           python -m poetry run flake8 . --exclude=.venv,migrations,config/settings.py --max-line-length=120
 
       - name: Run Unit Tests
-        env:
-          SECRET_KEY: 'django-insecure-ci-cd-test-key-placeholder'
-
         run: |
           python -m poetry run python manage.py test
 

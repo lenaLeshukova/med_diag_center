@@ -10,11 +10,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Читаем переменные из файла .env
 environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
-SECRET_KEY = env("SECRET_KEY")
-
-DEBUG = env("DEBUG")
-
-ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
+SECRET_KEY = env("SECRET_KEY", default="django-insecure-default-dev-key-placeholder-2026")
+DEBUG = env("DEBUG", default=True)
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["localhost", "127.0.0.1"])
 
 
 # Application definition
@@ -76,11 +74,11 @@ if env("DB_HOST", default="127.0.0.1") == "db":
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
-            "NAME": env("DB_NAME"),
-            "USER": env("DB_USER"),
-            "PASSWORD": env("DB_PASSWORD"),
+            "NAME": env("DB_NAME", default="med_diag_db"),
+            "USER": env("DB_USER", default="postgres"),
+            "PASSWORD": env("DB_PASSWORD", default="postgres"),
             "HOST": env("DB_HOST"),
-            "PORT": env("DB_PORT"),
+            "PORT": env("DB_PORT", default="5432"),
         }
     }
 else:
