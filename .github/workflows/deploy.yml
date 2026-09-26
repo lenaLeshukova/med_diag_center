@@ -1,0 +1,69 @@
+name: Django CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-size: '3.12'
+
+      - name: Install Poetry and dependencies
+        run: |
+          pip install poetry
+          poetry config virtualenvs.create false
+          poetry install --no-root
+
+      - name: Run Code Linters (Flake8)
+        run: |
+          poetry run flake8 . --exclude=.venv,migrations,config/settings.py --max-line-length=120
+
+      - name: Run Unit Tests
+        run: |
+          poetry run python manage.py test
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: tests
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy to Yandex Cloud via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }} # Если ключ без пароля, GitHub просто проигнорирует это поле
+          script: |
+            # Проверяем и устанавливаем docker / docker-compose
+            if ! command -v docker &> /dev/null; then
+              sudo apt update && sudo apt install -y docker.io docker-compose
+            fi
+            
+            PROJECT_DIR="med_diag_center"
+            if [ -d "$PROJECT_DIR" ]; then
+              cd "$PROJECT_DIR"
+              sudo git pull origin main || sudo git pull origin master
+            else
+              sudo git clone https://github.com{{ github.repository }}.git "$PROJECT_DIR"
+              cd "$PROJECT_DIR"
+            fi
+            
+            # Записываем секретный файл .env на сервер перед сборкой контейнеров
+            echo "${{ secrets.ENV_FILE }}" > .env
+            
+            # Перезапускаем контейнеры
+            sudo docker-compose down
+            sudo docker-compose up --build -d
