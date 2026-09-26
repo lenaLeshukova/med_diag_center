@@ -31,6 +31,12 @@ jobs:
           python -m poetry run flake8 . --exclude=.venv,migrations,config/settings.py --max-line-length=120
 
       - name: Run Unit Tests
+        env:
+          # Передаем фейковые безопасные данные строго для запуска тестов в GitHub
+          SECRET_KEY: "django-insecure-github-actions-test-key-2026"
+          DEBUG: "True"
+          ALLOWED_HOSTS: "localhost,127.0.0.1"
+          DB_HOST: "127.0.0.1" # Тесты Django автоматически используют локальную SQLite
         run: |
           python -m poetry run python manage.py test
 
