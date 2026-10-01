@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block title %}Каталог услуг и цен — MedDiagCenter{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4 text-primary fw-bold text-center">Услуги и стоимость диагностики</h1>
+        <p class="text-center text-muted mb-5">Выберите необходимый раздел для ознакомления с ценами и длительностью проведения процедур.</p>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        {% for category in categories %}
+            {% if category.services.all %}
+                <div class="card mb-4 shadow-sm border-primary">
+                    <div class="card-header bg-primary text-white py-3">
+                        <h3 class="card-title mb-0 fw-bold"><i class="bi bi-file-earmark-medical me-2"></i>{{ category.name }}</h3>
+                        {% if category.description %}
+                            <p class="small mb-0 text-white-50 mt-1">{{ category.description }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-striped mb-0 align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th scope="col" class="ps-4" style="width: 50%;">Наименование исследования</th>
+                                        <th scope="col" style="width: 20%;">Длительность</th>
+                                        <th scope="col" class="text-end pe-4" style="width: 30%;">Стоимость</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for service in category.services.all %}
+                                        <tr>
+                                            <td class="ps-4 fw-semibold text-secondary">
+                                                {{ service.name }}
+                                                <small class="d-block text-muted fw-normal mt-1">{{ service.description }}</small>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-light text-dark border">
+                                                    <i class="bi bi-clock me-1 text-primary"></i>{{ service.duration_minutes }} мин
+                                                </span>
+                                            </td>
+                                            <td class="text-end pe-4 fs-5 fw-bold text-success">
+                                                {{ service.price }} ₽
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        {% empty %}
+            <div class="text-center py-5 border rounded bg-light">
+                <i class="bi bi-folder-x display-1 text-muted"></i>
+                <p class="fs-4 text-muted mt-3">Разделы каталога и цены еще не добавлены администратором.</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

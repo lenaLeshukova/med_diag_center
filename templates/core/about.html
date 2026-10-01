@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}О компании — MedDiagCenter{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <h1 class="mb-4 text-primary fw-bold">О нашем центре</h1>
+        <p class="lead">MedDiagCenter основан в 2018 году с единой целью — сделать медицинскую диагностику экспертного уровня доступной для каждого пациента.</p>
+        <h3 class="mt-4">Наша миссия</h3>
+        <p>Забота о здоровье человека на основе предоставления точных, своевременных и объективных результатов диагностических исследований.</p>
+    </div>
+</div>
+
+<!-- Список врачей -->
+<h2 class="mt-5 mb-4 text-center">Наша команда специалистов</h2>
+<div class="row">
+    {% for doctor in doctors %}
+    <div class="col-md-3 mb-4">
+        <div class="card h-100 shadow-sm text-center">
+            {% if doctor.photo %}
+                <img src="{{ doctor.photo.url }}" class="card-img-top" alt="{{ doctor.full_name }}" style="height: 250px; object-fit: cover;">
+            {% else %}
+                <div class="bg-secondary text-white py-5" style="height: 250px;"><i class="bi bi-person-fill display-1"></i></div>
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title fw-bold mb-1">{{ doctor.full_name }}</h5>
+                <p class="text-primary mb-2">{{ doctor.specialization }}</p>
+                <p class="card-text small text-muted">{{ doctor.bio|truncatewords:10 }}</p>
+            </div>
+            <div class="card-footer bg-light text-muted small">
+                Стаж работы: {{ doctor.experience }} лет
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <p class="text-center text-muted">Информация о врачах пока не добавлена.</p>
+    {% endfor %}
+</div>
+{% endblock %}
